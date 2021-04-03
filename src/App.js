@@ -17,16 +17,22 @@ export default function App() {
   let answerList = [];
   for(let i = 0; i < questions.length; i++) {
     let answers = [questions[i].correct_answer, ...questions[i].incorrect_answers];
+    console.log(answers[0]);
+    for(let i = 0; i < answers.length; i++) {
+      const rand = Math.floor(Math.random() * answers.length);
+      const temp = answers[i];
+      answers[i] = answers[rand];
+      answers[rand] = temp;
+    }
     answerList.push(answers.map(answer => (
     <div className="answerWrapper">
-      <Button variant="outlined" color="primary">{answer}</Button>
+      <Button key={nanoid()} variant="outlined" color="primary">{answer}</Button>
     </div>
     )));
   }
 
   let count = 0;
   const questionList = questions.map(question => {
-    
     return (
       <Paper key={nanoid()} className="question" elevation={3}>
         <p className="qTitle">{question.question}</p>
@@ -38,9 +44,7 @@ export default function App() {
   })
   return (
     <div>
-      {questions.map((question) => (
-        <h1>{questionList}</h1>
-      ))}
+      {questionList}
     </div>
   );
 }
