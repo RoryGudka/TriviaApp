@@ -16,3 +16,10 @@
   display:inline-block;
   margin:10px;
 }
+
+.MuiButtonBase-root.correctAnswer {
+  background-color:lightgreen;
+}
+.MuiButtonBase-root.incorrectAnswer {
+  background-color:rgb(255, 98, 98);
+}
