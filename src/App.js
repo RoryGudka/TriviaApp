@@ -37,10 +37,11 @@ export default function App() {
           let question = res.results[i];
           question.question = decodeHTML(question.question);
           question.answered = false;
-          let answers = [question.correct_answer, ...question.incorrect_answers];
-          for(let j = 0; j < answers.length; j++) {
-            answers[j] = decodeHTML(answers[j]);
+          question.correct_answer = decodeHTML(question.correct_answer);
+          for(let j = 0; j < question.incorrect_answers.length; j++) {
+            question.incorrect_answers[j] = decodeHTML(question.incorrect_answers[j]);
           }
+          let answers = [question.correct_answer, ...question.incorrect_answers];
           for(let j = 0; j < answers.length; j++) {
             const rand = Math.floor(Math.random() * answers.length);
             const temp = answers[j];
