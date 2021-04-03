@@ -6,9 +6,14 @@ import "./App.css";
 
 export default function App() {
   const [questions, setQuestions] = useState([]);
-
-
-
+  
+  
+  
+  const  decodeHTML = html => {
+    var txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  };
   const handleAnswerClick = (e, index, answer) => {
     let question = questions[index];
     if(!question.answered) {
@@ -29,8 +34,13 @@ export default function App() {
       .then((res) => res.json())
       .then((res) => {
         for(let i = 0; i < res.results.length; i++) {
-          res.results[i].answered = false;
-          let answers = [res.results[i].correct_answer, ...res.results[i].incorrect_answers];
+          let question = res.results[i];
+          question.question = decodeHTML(question.question);
+          question.answered = false;
+          let answers = [question.correct_answer, ...question.incorrect_answers];
+          for(let j = 0; j < answers.length; j++) {
+            answers[j] = decodeHTML(answers[j]);
+          }
           for(let j = 0; j < answers.length; j++) {
             const rand = Math.floor(Math.random() * answers.length);
             const temp = answers[j];
