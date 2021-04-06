@@ -23,7 +23,7 @@ export default function App() {
   const handleNumChange = val => {
     setNumQuestions(val.target.value);
   }
-  const handleSearch = e => {
+  const handleSearch = () => {
     let num = parseInt(numQuestions);
     if(typeof num == "number" ) {
       if(num < 1) num = 1;
@@ -39,51 +39,57 @@ export default function App() {
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
-        for(let i = 0; i < res.results.length; i++) {
-          let question = res.results[i];
-          question.question = decodeHTML(question.question);
-          question.answered = false;
-          question.correct_answer = decodeHTML(question.correct_answer);
-          for(let j = 0; j < question.incorrect_answers.length; j++) {
-            question.incorrect_answers[j] = decodeHTML(question.incorrect_answers[j]);
+        if(res.results.length !== 0) {
+          for(let i = 0; i < res.results.length; i++) {
+            let question = res.results[i];
+            question.question = decodeHTML(question.question);
+            question.answered = false;
+            question.correct_answer = decodeHTML(question.correct_answer);
+            for(let j = 0; j < question.incorrect_answers.length; j++) {
+              question.incorrect_answers[j] = decodeHTML(question.incorrect_answers[j]);
+            }
+            let answers = [question.correct_answer, ...question.incorrect_answers];
+            for(let j = 0; j < answers.length; j++) {
+              const rand = Math.floor(Math.random() * answers.length);
+              const temp = answers[j];
+              answers[j] = answers[rand];
+              answers[rand] = temp;
+            }
+            res.results[i].answers = answers;
           }
-          let answers = [question.correct_answer, ...question.incorrect_answers];
-          for(let j = 0; j < answers.length; j++) {
-            const rand = Math.floor(Math.random() * answers.length);
-            const temp = answers[j];
-            answers[j] = answers[rand];
-            answers[rand] = temp;
-          }
-          res.results[i].answers = answers;
+          setQuestions(res.results);
         }
-        setQuestions(res.results);
+        else alert("No questions were found");
       });
   }
-  const handleMore = e => {
+  const handleMore = () => {
     searchMore(lastSearch.subject === 8 ? `https://opentdb.com/api.php?amount=${lastSearch.numQuestions}` : `https://opentdb.com/api.php?amount=${lastSearch.numQuestions}&category=${lastSearch.subject}`);
   }
   const searchMore = url => {
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
-        for(let i = 0; i < res.results.length; i++) {
-          let question = res.results[i];
-          question.question = decodeHTML(question.question);
-          question.answered = false;
-          question.correct_answer = decodeHTML(question.correct_answer);
-          for(let j = 0; j < question.incorrect_answers.length; j++) {
-            question.incorrect_answers[j] = decodeHTML(question.incorrect_answers[j]);
+        if(res.results.length !== 0) {
+          for(let i = 0; i < res.results.length; i++) {
+            let question = res.results[i];
+            question.question = decodeHTML(question.question);
+            question.answered = false;
+            question.correct_answer = decodeHTML(question.correct_answer);
+            for(let j = 0; j < question.incorrect_answers.length; j++) {
+              question.incorrect_answers[j] = decodeHTML(question.incorrect_answers[j]);
+            }
+            let answers = [question.correct_answer, ...question.incorrect_answers];
+            for(let j = 0; j < answers.length; j++) {
+              const rand = Math.floor(Math.random() * answers.length);
+              const temp = answers[j];
+              answers[j] = answers[rand];
+              answers[rand] = temp;
+            }
+            res.results[i].answers = answers;
           }
-          let answers = [question.correct_answer, ...question.incorrect_answers];
-          for(let j = 0; j < answers.length; j++) {
-            const rand = Math.floor(Math.random() * answers.length);
-            const temp = answers[j];
-            answers[j] = answers[rand];
-            answers[rand] = temp;
-          }
-          res.results[i].answers = answers;
+          setQuestions([...questions, ...res.results]);
         }
-        setQuestions([...questions, ...res.results]);
+        else alert("No questions were found");
       });
   }
   const  decodeHTML = html => {
@@ -133,7 +139,7 @@ export default function App() {
   })
 
 
-  console.log(numTried);
+
   return (
     <div>
       <div id="searchContainer">
