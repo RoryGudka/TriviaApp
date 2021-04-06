@@ -23,3 +23,20 @@
 .MuiButtonBase-root.incorrectAnswer {
   background-color:rgb(255, 98, 98);
 }
+
+#searchContainer {
+  text-align:center;
+  padding:20px;
+}
+#searchBtn {
+  margin-top:10px;
+  margin-left:20px;
+}
+.MuiTextField-root.specific {
+  margin-left:20px;
+}
+#noQuestions {
+  font-size:25px;
+  text-align:center;
+  margin:150px 0;
+}
