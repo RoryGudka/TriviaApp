@@ -40,3 +40,14 @@
   text-align:center;
   margin:150px 0;
 }
+#numWrapper {
+  top:-9.5px;
+  display:inline-block;
+  width:100px;
+  margin-right:20px;
+}
+#moreWrapper {
+  text-align:center;
+  padding-top:20px;
+  padding-bottom:40px;
+}

@@ -11,7 +11,8 @@ import "./App.css";
 
 export default function App() {
   const [questions, setQuestions] = useState([]);
-  const [subject, setSubject] = useState(9);
+  const [lastSearch, setLastSearch] = useState({});
+  const [subject, setSubject] = useState(8);
   const [numQuestions, setNumQuestions] = useState(10);
   
   
@@ -27,8 +28,11 @@ export default function App() {
     if(typeof num == "number" ) {
       if(num < 1) num = 1;
       else if(num > 100) num = 100;
-      const url = `https://opentdb.com/api.php?amount=${num}&category=${subject}`;
-      search(url);
+      setLastSearch({
+        "subject":subject,
+        "numQuestions":num
+      })
+      search(subject ===8 ? `https://opentdb.com/api.php?amount=${num}` : `https://opentdb.com/api.php?amount=${num}&category=${subject}`);
     }
   }
   const search = url => {
@@ -55,6 +59,33 @@ export default function App() {
         setQuestions(res.results);
       });
   }
+  const handleMore = e => {
+    searchMore(lastSearch.subject === 8 ? `https://opentdb.com/api.php?amount=${lastSearch.numQuestions}` : `https://opentdb.com/api.php?amount=${lastSearch.numQuestions}&category=${lastSearch.subject}`);
+  }
+  const searchMore = url => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((res) => {
+        for(let i = 0; i < res.results.length; i++) {
+          let question = res.results[i];
+          question.question = decodeHTML(question.question);
+          question.answered = false;
+          question.correct_answer = decodeHTML(question.correct_answer);
+          for(let j = 0; j < question.incorrect_answers.length; j++) {
+            question.incorrect_answers[j] = decodeHTML(question.incorrect_answers[j]);
+          }
+          let answers = [question.correct_answer, ...question.incorrect_answers];
+          for(let j = 0; j < answers.length; j++) {
+            const rand = Math.floor(Math.random() * answers.length);
+            const temp = answers[j];
+            answers[j] = answers[rand];
+            answers[rand] = temp;
+          }
+          res.results[i].answers = answers;
+        }
+        setQuestions([...questions, ...res.results]);
+      });
+  }
   const  decodeHTML = html => {
     var txt = document.createElement('textarea');
     txt.innerHTML = html;
@@ -74,7 +105,13 @@ export default function App() {
 
 
   let answerList = [];
+  let numCorrect = 0;
+  let numTried = 0;
   for(let i = 0; i < questions.length; i++) {
+    if(questions[i].answered) {
+      numTried++;
+      if(questions[i].isCorrect) numCorrect++;
+    }
     let answers = questions[i].answers;
     answerList.push(answers.map(answer => (
     <div key={nanoid()} className="answerWrapper">
@@ -96,13 +133,14 @@ export default function App() {
   })
 
 
-
+  console.log(numTried);
   return (
     <div>
       <div id="searchContainer">
         <FormControl>
           <InputLabel>Category</InputLabel>
           <Select id="demo-simple-select" value={subject} onChange={handleChange}>
+            <MenuItem value={8}>Any Category</MenuItem>
             <MenuItem value={9}>General Knowledge</MenuItem>
             <MenuItem value={10}>Entertainment: Books</MenuItem>
             <MenuItem value={11}>Entertainment: Film</MenuItem>
@@ -129,10 +167,13 @@ export default function App() {
             <MenuItem value={32}>Entertainment: Catoons and Animation</MenuItem>
           </Select>
         </FormControl>
-        <TextField label="Number of Questions" className="specific" value={numQuestions} onChange={handleNumChange}></TextField>
+        <div id="numWrapper">
+          <TextField fullWidth label="Amount" className="specific" value={numQuestions} onChange={handleNumChange}></TextField>
+        </div>
         <Button id="searchBtn" variant="contained" color="primary" onClick={handleSearch}>Search</Button>
       </div>
       {questionList.length !== 0 ? questionList : <p id="noQuestions">Make a search to get questions</p>}
+      {questionList.length !== 0 && numTried === questionList.length ? <div id="moreWrapper"><Button variant="contained" color="primary" onClick={handleMore}>Show More Questions</Button></div> : ""}
     </div>
   );
 }
