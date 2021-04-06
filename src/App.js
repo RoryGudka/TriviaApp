@@ -174,6 +174,7 @@ export default function App() {
       </div>
       {questionList.length !== 0 ? questionList : <p id="noQuestions">Make a search to get questions</p>}
       {questionList.length !== 0 && numTried === questionList.length ? <div id="moreWrapper"><Button variant="contained" color="primary" onClick={handleMore}>Show More Questions</Button></div> : ""}
+      {numTried !== 0 ? <p id="ratio">{numCorrect}/{numTried}</p> : ""}
     </div>
   );
 }

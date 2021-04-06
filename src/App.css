@@ -51,3 +51,10 @@
   padding-top:20px;
   padding-bottom:40px;
 }
+#ratio {
+  position:fixed;
+  font-size:24px;
+  right:20px;
+  bottom:20px;
+  margin:0;
+}
