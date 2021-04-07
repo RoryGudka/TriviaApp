@@ -27,7 +27,7 @@ export default function App() {
     let num = parseInt(numQuestions);
     if(typeof num == "number" ) {
       if(num < 1) num = 1;
-      else if(num > 100) num = 100;
+      else if(num > 50) num = 50;
       setLastSearch({
         "subject":subject,
         "numQuestions":num
